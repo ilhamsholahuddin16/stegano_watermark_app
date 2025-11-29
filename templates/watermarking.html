@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watermarking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .step-item {
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        .step-item:nth-child(1) { animation-delay: 0.1s; }
+        .step-item:nth-child(2) { animation-delay: 0.2s; }
+        .step-item:nth-child(3) { animation-delay: 0.3s; }
+        .step-item:nth-child(4) { animation-delay: 0.4s; }
+        .step-item:nth-child(5) { animation-delay: 0.5s; }
+        .step-item:nth-child(6) { animation-delay: 0.6s; }
+        .step-item:nth-child(7) { animation-delay: 0.7s; }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+        .spinner-blue {
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-top-color: #3b82f6;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        .loading-spinner-large {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header with Back Button -->
+        <div class="mb-8">
+            <a href="/" class="inline-flex items-center text-blue-700 hover:text-blue-900 font-semibold mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>Kembali ke Menu Utama
+            </a>
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-blue-900 mb-2">
+                    <i class="fas fa-stamp mr-3"></i>WATERMARKING
+                </h1>
+                <p class="text-gray-600">Lindungi hak cipta gambar dengan watermark</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden max-w-6xl mx-auto">
+            <div class="flex border-b">
+                <button onclick="switchTab('text')" class="tab-btn flex-1 px-6 py-4 text-center font-semibold text-gray-700 hover:bg-blue-50 border-b-2 border-blue-600 active">
+                    <i class="fas fa-font mr-2"></i>Watermark Teks
+                </button>
+                <button onclick="switchTab('logo')" class="tab-btn flex-1 px-6 py-4 text-center font-semibold text-gray-700 hover:bg-blue-50 border-b-2 border-transparent">
+                    <i class="fas fa-image mr-2"></i>Watermark Logo
+                </button>
+            </div>
+
+            <!-- Text Watermark Tab -->
+            <div id="text" class="tab-content active p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Tambahkan Watermark Teks</h2>
+
+                <form id="textForm" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-image mr-2"></i>Upload Gambar
+                        </label>
+                        <input type="file" id="textImage" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-text-width mr-2"></i>Teks Watermark
+                        </label>
+                        <input type="text" id="textWatermark" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="© 2024 My Company" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-location-dot mr-2"></i>Posisi
+                            </label>
+                            <select id="textPosition" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                <option value="bottom-right">Kanan Bawah</option>
+                                <option value="bottom-left">Kiri Bawah</option>
+                                <option value="top-right">Kanan Atas</option>
+                                <option value="top-left">Kiri Atas</option>
+                                <option value="center">Tengah</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-adjust mr-2"></i>Opacity: <span id="textOpacityValue">128</span>
+                            </label>
+                            <input type="range" id="textOpacity" min="0" max="255" value="128" class="w-full" oninput="document.getElementById('textOpacityValue').textContent = this.value">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        <i class="fas fa-stamp mr-2"></i>Tambahkan Watermark
+                    </button>
+                </form>
+
+                <!-- Result Section -->
+                <div id="textResult" class="mt-8 hidden">
+                    <div class="border-t pt-6">
+                        <!-- Download Section -->
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 text-white text-center mb-6">
+                            <h4 class="text-xl font-bold mb-3">
+                                <i class="fas fa-check-circle mr-2"></i>Proses Selesai!
+                            </h4>
+                            <p class="mb-4">Gambar dengan watermark berhasil dibuat.</p>
+                            <button id="textDownloadBtn" class="bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
+                                <i class="fas fa-download mr-2"></i>Download Gambar
+                            </button>
+                        </div>
+
+                        <!-- Toggle Process Details -->
+                        <div class="mb-4">
+                            <button onclick="toggleSteps('textSteps')" class="w-full bg-white border-2 border-blue-300 text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition flex items-center justify-between">
+                                <span>
+                                    <i class="fas fa-eye mr-2"></i>Lihat Proses Lengkap
+                                </span>
+                                <i class="fas fa-chevron-down transition-transform" id="textSteps-icon"></i>
+                            </button>
+                        </div>
+
+                        <!-- Process Steps (Hidden by default) -->
+                        <div id="textSteps-container" class="space-y-4 mb-6" style="display: none;">
+                            <h3 class="text-2xl font-bold text-blue-900 mb-4">
+                                <i class="fas fa-cogs mr-2"></i>Detail Pengolahan Gambar
+                            </h3>
+                            <div id="textSteps" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logo Watermark Tab -->
+            <div id="logo" class="tab-content p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Tambahkan Watermark Logo</h2>
+
+                <form id="logoForm" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-image mr-2"></i>Upload Gambar Utama
+                        </label>
+                        <input type="file" id="logoImage" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-image mr-2"></i>Upload Logo
+                        </label>
+                        <input type="file" id="logoFile" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                        <p class="text-sm text-gray-500 mt-1">Gunakan logo dengan background transparan (PNG) untuk hasil terbaik</p>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-location-dot mr-2"></i>Posisi
+                            </label>
+                            <select id="logoPosition" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                <option value="bottom-right">Kanan Bawah</option>
+                                <option value="bottom-left">Kiri Bawah</option>
+                                <option value="top-right">Kanan Atas</option>
+                                <option value="top-left">Kiri Atas</option>
+                                <option value="center">Tengah</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-expand mr-2"></i>Skala: <span id="logoScaleValue">0.2</span>
+                            </label>
+                            <input type="range" id="logoScale" min="0.1" max="0.5" step="0.05" value="0.2" class="w-full" oninput="document.getElementById('logoScaleValue').textContent = this.value">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-adjust mr-2"></i>Opacity: <span id="logoOpacityValue">128</span>
+                            </label>
+                            <input type="range" id="logoOpacity" min="0" max="255" value="128" class="w-full" oninput="document.getElementById('logoOpacityValue').textContent = this.value">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        <i class="fas fa-stamp mr-2"></i>Tambahkan Watermark Logo
+                    </button>
+                </form>
+
+                <!-- Result Section -->
+                <div id="logoResult" class="mt-8 hidden">
+                    <div class="border-t pt-6">
+                        <!-- Download Section -->
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 text-white text-center mb-6">
+                            <h4 class="text-xl font-bold mb-3">
+                                <i class="fas fa-check-circle mr-2"></i>Proses Selesai!
+                            </h4>
+                            <p class="mb-4">Gambar dengan watermark logo berhasil dibuat.</p>
+                            <button id="logoDownloadBtn" class="bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
+                                <i class="fas fa-download mr-2"></i>Download Gambar
+                            </button>
+                        </div>
+
+                        <!-- Toggle Process Details -->
+                        <div class="mb-4">
+                            <button onclick="toggleSteps('logoSteps')" class="w-full bg-white border-2 border-blue-300 text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition flex items-center justify-between">
+                                <span>
+                                    <i class="fas fa-eye mr-2"></i>Lihat Proses Lengkap
+                                </span>
+                                <i class="fas fa-chevron-down transition-transform" id="logoSteps-icon"></i>
+                            </button>
+                        </div>
+
+                        <!-- Process Steps (Hidden by default) -->
+                        <div id="logoSteps-container" class="space-y-4 mb-6" style="display: none;">
+                            <h3 class="text-2xl font-bold text-blue-900 mb-4">
+                                <i class="fas fa-cogs mr-2"></i>Detail Pengolahan Gambar
+                            </h3>
+                            <div id="logoSteps" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner-large"></div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Memproses Gambar...</h3>
+            <p class="text-gray-600" id="loadingMessage">Mohon tunggu sebentar</p>
+        </div>
+    </div>
+
+    <script>
+        let textImageData = null;
+        let logoImageData = null;
+
+        // Loading functions
+        function showLoading(message = 'Memproses gambar...') {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loadingMessage').textContent = message;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // Toggle steps visibility
+        function toggleSteps(stepsId) {
+            const container = document.getElementById(stepsId + '-container');
+            const icon = document.getElementById(stepsId + '-icon');
+            const button = event.currentTarget;
+
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+                button.querySelector('span').innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Sembunyikan Proses';
+            } else {
+                container.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+                button.querySelector('span').innerHTML = '<i class="fas fa-eye mr-2"></i>Lihat Proses Lengkap';
+            }
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const btns = document.querySelectorAll('.tab-btn');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            btns.forEach(b => {
+                b.classList.remove('active', 'border-blue-600', 'text-blue-600');
+                b.classList.add('border-transparent');
+            });
+
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active', 'border-blue-600', 'text-blue-600');
+            event.target.classList.remove('border-transparent');
+        }
+
+        // Text Watermark Form
+        document.getElementById('textForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            showLoading('Menambahkan watermark teks...');
+
+            // Hide previous results
+            document.getElementById('textResult').classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('image', document.getElementById('textImage').files[0]);
+            formData.append('text', document.getElementById('textWatermark').value);
+            formData.append('position', document.getElementById('textPosition').value);
+            formData.append('opacity', document.getElementById('textOpacity').value);
+
+            try {
+                const response = await fetch('/watermark/visible', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                hideLoading();
+
+                if (data.success) {
+                    textImageData = data.image;
+                    displaySteps('textSteps', data.steps);
+                    document.getElementById('textResult').classList.remove('hidden');
+                    document.getElementById('textResult').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                hideLoading();
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Logo Watermark Form
+        document.getElementById('logoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            showLoading('Menambahkan watermark logo...');
+
+            // Hide previous results
+            document.getElementById('logoResult').classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('image', document.getElementById('logoImage').files[0]);
+            formData.append('logo', document.getElementById('logoFile').files[0]);
+            formData.append('position', document.getElementById('logoPosition').value);
+            formData.append('opacity', document.getElementById('logoOpacity').value);
+            formData.append('scale', document.getElementById('logoScale').value);
+
+            try {
+                const response = await fetch('/watermark/image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                hideLoading();
+
+                if (data.success) {
+                    logoImageData = data.image;
+                    displaySteps('logoSteps', data.steps);
+                    document.getElementById('logoResult').classList.remove('hidden');
+                    document.getElementById('logoResult').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                hideLoading();
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Display Steps with loading animation
+        function displaySteps(containerId, steps) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            steps.forEach((step, index) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'step-item';
+
+                // Initial loading state
+                const statusIcon = '<div class="spinner spinner-blue"></div>';
+                const statusClass = 'border-blue-200 bg-blue-50';
+
+                stepDiv.innerHTML = `
+                    <div class="border-l-4 border-blue-500 ${statusClass} rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                ${step.step}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-gray-800">${step.title}</h4>
+                                    <span class="status-icon">${statusIcon}</span>
+                                </div>
+                                <p class="text-gray-700 mb-2">${step.description}</p>
+                                <div class="bg-white border border-gray-200 rounded p-3 mt-2" style="display: none;">
+                                    <pre class="text-sm text-gray-600 whitespace-pre-wrap font-mono">${step.detail}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(stepDiv);
+
+                // Animate to completed state
+                setTimeout(() => {
+                    const statusIconEl = stepDiv.querySelector('.status-icon');
+                    const detailBox = stepDiv.querySelector('.bg-white');
+                    const parentDiv = stepDiv.querySelector('.border-l-4');
+
+                    if (step.status === 'success') {
+                        statusIconEl.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                        parentDiv.classList.remove('border-blue-200', 'bg-blue-50');
+                        parentDiv.classList.add('border-green-200', 'bg-green-50');
+                    } else {
+                        statusIconEl.innerHTML = '<i class="fas fa-exclamation-circle text-red-500"></i>';
+                        parentDiv.classList.remove('border-blue-200', 'bg-blue-50');
+                        parentDiv.classList.add('border-red-200', 'bg-red-50');
+                    }
+
+                    // Show detail with animation
+                    detailBox.style.display = 'block';
+                    detailBox.style.opacity = '0';
+                    setTimeout(() => {
+                        detailBox.style.transition = 'opacity 0.3s';
+                        detailBox.style.opacity = '1';
+                    }, 50);
+
+                }, (index + 1) * 300); // Stagger animation
+            });
+        }
+
+        // Download buttons
+        document.getElementById('textDownloadBtn').addEventListener('click', () => {
+            if (textImageData) {
+                const link = document.createElement('a');
+                link.href = 'data:image/png;base64,' + textImageData;
+                link.download = 'watermarked_text.png';
+                link.click();
+            }
+        });
+
+        document.getElementById('logoDownloadBtn').addEventListener('click', () => {
+            if (logoImageData) {
+                const link = document.createElement('a');
+                link.href = 'data:image/png;base64,' + logoImageData;
+                link.download = 'watermarked_logo.png';
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>

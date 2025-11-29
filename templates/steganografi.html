@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steganografi LSB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .step-item {
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        .step-item:nth-child(1) { animation-delay: 0.1s; }
+        .step-item:nth-child(2) { animation-delay: 0.2s; }
+        .step-item:nth-child(3) { animation-delay: 0.3s; }
+        .step-item:nth-child(4) { animation-delay: 0.4s; }
+        .step-item:nth-child(5) { animation-delay: 0.5s; }
+        .step-item:nth-child(6) { animation-delay: 0.6s; }
+        .step-item:nth-child(7) { animation-delay: 0.7s; }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+        .spinner-purple {
+            border: 3px solid rgba(147, 51, 234, 0.3);
+            border-top-color: #9333ea;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        .loading-spinner-large {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(147, 51, 234, 0.3);
+            border-radius: 50%;
+            border-top-color: #9333ea;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header with Back Button -->
+        <div class="mb-8">
+            <a href="/" class="inline-flex items-center text-purple-700 hover:text-purple-900 font-semibold mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>Kembali ke Menu Utama
+            </a>
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-purple-900 mb-2">
+                    <i class="fas fa-user-secret mr-3"></i>STEGANOGRAFI LSB
+                </h1>
+                <p class="text-gray-600">Sembunyikan dan ekstrak pesan rahasia dalam gambar</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden max-w-6xl mx-auto">
+            <div class="flex border-b">
+                <button onclick="switchTab('encode')" class="tab-btn flex-1 px-6 py-4 text-center font-semibold text-gray-700 hover:bg-purple-50 border-b-2 border-purple-600 active">
+                    <i class="fas fa-lock mr-2"></i>Encode Pesan
+                </button>
+                <button onclick="switchTab('decode')" class="tab-btn flex-1 px-6 py-4 text-center font-semibold text-gray-700 hover:bg-purple-50 border-b-2 border-transparent">
+                    <i class="fas fa-unlock mr-2"></i>Decode Pesan
+                </button>
+            </div>
+
+            <!-- Encode Tab -->
+            <div id="encode" class="tab-content active p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Sembunyikan Pesan dalam Gambar</h2>
+
+                <form id="encodeForm" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-image mr-2"></i>Upload Gambar Cover
+                        </label>
+                        <input type="file" id="encodeImage" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                        <p class="text-sm text-gray-500 mt-1">Format: PNG, JPG, dll. (akan disimpan sebagai PNG)</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-message mr-2"></i>Pesan Rahasia
+                        </label>
+                        <textarea id="encodeMessage" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Masukkan pesan yang ingin disembunyikan..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+                        <i class="fas fa-lock mr-2"></i>Encode Pesan
+                    </button>
+                </form>
+
+                <!-- Result Section -->
+                <div id="encodeResult" class="mt-8 hidden">
+                    <div class="border-t pt-6">
+                        <!-- Download Section -->
+                        <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg p-6 text-white text-center mb-6">
+                            <h4 class="text-xl font-bold mb-3">
+                                <i class="fas fa-check-circle mr-2"></i>Proses Selesai!
+                            </h4>
+                            <p class="mb-4">Gambar stego berhasil dibuat. Pesan Anda telah tersembunyi di dalam gambar.</p>
+                            <button id="downloadBtn" class="bg-white text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition">
+                                <i class="fas fa-download mr-2"></i>Download Gambar Stego
+                            </button>
+                        </div>
+
+                        <!-- Toggle Process Details -->
+                        <div class="mb-4">
+                            <button onclick="toggleSteps('encodeSteps')" class="w-full bg-white border-2 border-purple-300 text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition flex items-center justify-between">
+                                <span>
+                                    <i class="fas fa-eye mr-2"></i>Lihat Proses Lengkap
+                                </span>
+                                <i class="fas fa-chevron-down transition-transform" id="encodeSteps-icon"></i>
+                            </button>
+                        </div>
+
+                        <!-- Process Steps (Hidden by default) -->
+                        <div id="encodeSteps-container" class="space-y-4 mb-6" style="display: none;">
+                            <h3 class="text-2xl font-bold text-purple-900 mb-4">
+                                <i class="fas fa-cogs mr-2"></i>Detail Pengolahan Gambar
+                            </h3>
+                            <div id="encodeSteps" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decode Tab -->
+            <div id="decode" class="tab-content p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Ekstrak Pesan dari Gambar</h2>
+
+                <form id="decodeForm" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-image mr-2"></i>Upload Gambar Stego
+                        </label>
+                        <input type="file" id="decodeImage" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                        <p class="text-sm text-gray-500 mt-1">Upload gambar yang berisi pesan tersembunyi</p>
+                    </div>
+
+                    <button type="submit" class="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+                        <i class="fas fa-unlock mr-2"></i>Decode Pesan
+                    </button>
+                </form>
+
+                <!-- Result Section -->
+                <div id="decodeResult" class="mt-8 hidden">
+                    <div class="border-t pt-6">
+                        <!-- Message Display -->
+                        <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg p-6 text-white mb-6">
+                            <h4 class="text-xl font-bold mb-3">
+                                <i class="fas fa-envelope-open-text mr-2"></i>Pesan Tersembunyi
+                            </h4>
+                            <div id="decodedMessage" class="bg-white text-gray-800 p-4 rounded-lg font-mono text-lg"></div>
+                        </div>
+
+                        <!-- Toggle Process Details -->
+                        <div class="mb-4">
+                            <button onclick="toggleSteps('decodeSteps')" class="w-full bg-white border-2 border-purple-300 text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition flex items-center justify-between">
+                                <span>
+                                    <i class="fas fa-eye mr-2"></i>Lihat Proses Lengkap
+                                </span>
+                                <i class="fas fa-chevron-down transition-transform" id="decodeSteps-icon"></i>
+                            </button>
+                        </div>
+
+                        <!-- Process Steps (Hidden by default) -->
+                        <div id="decodeSteps-container" class="space-y-4 mb-6" style="display: none;">
+                            <h3 class="text-2xl font-bold text-purple-900 mb-4">
+                                <i class="fas fa-cogs mr-2"></i>Detail Ekstraksi Pesan
+                            </h3>
+                            <div id="decodeSteps" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner-large"></div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Memproses Gambar...</h3>
+            <p class="text-gray-600" id="loadingMessage">Mohon tunggu sebentar</p>
+        </div>
+    </div>
+
+    <script>
+        let stegoImageData = null;
+
+        // Loading functions
+        function showLoading(message = 'Memproses gambar...') {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loadingMessage').textContent = message;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // Toggle steps visibility
+        function toggleSteps(stepsId) {
+            const container = document.getElementById(stepsId + '-container');
+            const icon = document.getElementById(stepsId + '-icon');
+            const button = event.currentTarget;
+
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+                button.querySelector('span').innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Sembunyikan Proses';
+            } else {
+                container.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+                button.querySelector('span').innerHTML = '<i class="fas fa-eye mr-2"></i>Lihat Proses Lengkap';
+            }
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const btns = document.querySelectorAll('.tab-btn');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            btns.forEach(b => {
+                b.classList.remove('active', 'border-purple-600', 'text-purple-600');
+                b.classList.add('border-transparent');
+            });
+
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active', 'border-purple-600', 'text-purple-600');
+            event.target.classList.remove('border-transparent');
+        }
+
+        // Encode Form
+        document.getElementById('encodeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            showLoading('Menyembunyikan pesan dalam gambar...');
+
+            // Hide previous results
+            document.getElementById('encodeResult').classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('image', document.getElementById('encodeImage').files[0]);
+            formData.append('message', document.getElementById('encodeMessage').value);
+
+            try {
+                const response = await fetch('/steganography/encode', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                hideLoading();
+
+                if (data.success) {
+                    stegoImageData = data.image;
+                    displaySteps('encodeSteps', data.steps);
+                    document.getElementById('encodeResult').classList.remove('hidden');
+                    document.getElementById('encodeResult').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                hideLoading();
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Decode Form
+        document.getElementById('decodeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            showLoading('Mengekstrak pesan dari gambar...');
+
+            // Hide previous results
+            document.getElementById('decodeResult').classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('image', document.getElementById('decodeImage').files[0]);
+
+            try {
+                const response = await fetch('/steganography/decode', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                hideLoading();
+
+                if (data.success) {
+                    displaySteps('decodeSteps', data.steps);
+                    document.getElementById('decodedMessage').textContent = data.message;
+                    document.getElementById('decodeResult').classList.remove('hidden');
+                    document.getElementById('decodeResult').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                hideLoading();
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Display Steps with loading animation
+        function displaySteps(containerId, steps) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            steps.forEach((step, index) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'step-item';
+
+                // Initial loading state
+                const statusIcon = '<div class="spinner spinner-purple"></div>';
+                const statusClass = 'border-purple-200 bg-purple-50';
+
+                stepDiv.innerHTML = `
+                    <div class="border-l-4 border-purple-500 ${statusClass} rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                                ${step.step}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-gray-800">${step.title}</h4>
+                                    <span class="status-icon">${statusIcon}</span>
+                                </div>
+                                <p class="text-gray-700 mb-2">${step.description}</p>
+                                <div class="bg-white border border-gray-200 rounded p-3 mt-2" style="display: none;">
+                                    <pre class="text-sm text-gray-600 whitespace-pre-wrap font-mono">${step.detail}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(stepDiv);
+
+                // Animate to completed state
+                setTimeout(() => {
+                    const statusIconEl = stepDiv.querySelector('.status-icon');
+                    const detailBox = stepDiv.querySelector('.bg-white');
+                    const parentDiv = stepDiv.querySelector('.border-l-4');
+
+                    if (step.status === 'success') {
+                        statusIconEl.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                        parentDiv.classList.remove('border-purple-200', 'bg-purple-50');
+                        parentDiv.classList.add('border-green-200', 'bg-green-50');
+                    } else {
+                        statusIconEl.innerHTML = '<i class="fas fa-exclamation-circle text-red-500"></i>';
+                        parentDiv.classList.remove('border-purple-200', 'bg-purple-50');
+                        parentDiv.classList.add('border-red-200', 'bg-red-50');
+                    }
+
+                    // Show detail with animation
+                    detailBox.style.display = 'block';
+                    detailBox.style.opacity = '0';
+                    setTimeout(() => {
+                        detailBox.style.transition = 'opacity 0.3s';
+                        detailBox.style.opacity = '1';
+                    }, 50);
+
+                }, (index + 1) * 300); // Stagger animation
+            });
+        }
+
+        // Download button
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if (stegoImageData) {
+                const link = document.createElement('a');
+                link.href = 'data:image/png;base64,' + stegoImageData;
+                link.download = 'stego_image.png';
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>

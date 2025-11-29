@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steganografi & Watermarking - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-text-blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12 md:mb-16">
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-3 md:mb-4">
+                <i class="fas fa-shield-halved mr-2 md:mr-4"></i>
+                Pengolahan Citra Digital
+            </h1>
+            <p class="text-base md:text-lg lg:text-xl text-gray-600 mb-2">Steganografi & Watermarking Application</p>
+            <p class="text-sm md:text-md text-gray-500">Pilih metode yang ingin Anda gunakan</p>
+        </div>
+
+        <!-- Menu Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto mb-16">
+
+            <!-- Steganografi Card -->
+            <a href="/steganografi" class="block">
+                <div class="card-hover bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-purple-200 hover:border-purple-400">
+                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-8 text-white text-center">
+                        <i class="fas fa-user-secret text-7xl mb-4"></i>
+                        <h2 class="text-3xl font-bold">STEGANOGRAFI</h2>
+                        <p class="text-purple-100 mt-2">Least Significant Bit (LSB)</p>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Sembunyikan Pesan Rahasia</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-purple-600 mt-1 mr-3"></i>
+                                <span>Encode: Sembunyikan pesan dalam gambar</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-purple-600 mt-1 mr-3"></i>
+                                <span>Decode: Ekstrak pesan dari gambar</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-purple-600 mt-1 mr-3"></i>
+                                <span>Tidak terlihat oleh mata (±1 pixel)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-purple-600 mt-1 mr-3"></i>
+                                <span>Kapasitas besar untuk data</span>
+                            </li>
+                        </ul>
+                        <div class="mt-8">
+                            <div class="bg-purple-50 border-l-4 border-purple-600 p-4 rounded">
+                                <p class="text-sm text-gray-700">
+                                    <i class="fas fa-lightbulb text-purple-600 mr-2"></i>
+                                    <strong>Cocok untuk:</strong> Komunikasi rahasia, menyimpan data tersembunyi
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-purple-600 text-white text-center py-4 font-bold text-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-arrow-right mr-2"></i>Pilih Steganografi
+                    </div>
+                </div>
+            </a>
+
+            <!-- Watermarking Card -->
+            <a href="/watermarking" class="block">
+                <div class="card-hover bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-blue-200 hover:border-blue-400">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white text-center">
+                        <i class="fas fa-stamp text-7xl mb-4"></i>
+                        <h2 class="text-3xl font-bold">WATERMARKING</h2>
+                        <p class="text-blue-100 mt-2">Visible Watermarking Text and Logo</p>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Lindungi Hak Cipta</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-600 mt-1 mr-3"></i>
+                                <span>Watermark Teks: Tambahkan copyright text</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-600 mt-1 mr-3"></i>
+                                <span>Watermark Logo: Tambahkan branding</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-600 mt-1 mr-3"></i>
+                                <span>Atur posisi watermark</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-blue-600 mt-1 mr-3"></i>
+                                <span>Atur tingkat transparasi</span>
+                            </li>
+                        </ul>
+                        <div class="mt-8">
+                            <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded">
+                                <p class="text-sm text-gray-700">
+                                    <i class="fas fa-lightbulb text-blue-600 mr-2"></i>
+                                    <strong>Cocok untuk:</strong> Proteksi gambar, branding, verifikasi keaslian
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-600 text-white text-center py-4 font-bold text-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-arrow-right mr-2"></i>Pilih Watermarking
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- Feature Comparison -->
+        <div class="max-w-5xl mx-auto mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8">
+                <i class="fas fa-balance-scale mr-2 md:mr-3"></i>Perbandingan Metode
+            </h2>
+
+            <!-- Mobile: Card Layout -->
+            <div class="block md:hidden space-y-4">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 text-center pb-4 border-b-2 border-gray-200">
+                            <h3 class="font-bold text-gray-700 text-lg">Visibility</h3>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-purple-700 font-semibold mb-2 text-sm">
+                                <i class="fas fa-user-secret"></i> Steganografi
+                            </div>
+                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs">Tidak Terlihat</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-blue-700 font-semibold mb-2 text-sm">
+                                <i class="fas fa-stamp"></i> Watermarking
+                            </div>
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">Visible/Invisible</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 text-center pb-4 border-b-2 border-gray-200">
+                            <h3 class="font-bold text-gray-700 text-lg">Tujuan Utama</h3>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-purple-700 font-semibold mb-2 text-sm">
+                                <i class="fas fa-user-secret"></i> Steganografi
+                            </div>
+                            <p class="text-gray-600 text-sm">Komunikasi Rahasia</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-blue-700 font-semibold mb-2 text-sm">
+                                <i class="fas fa-stamp"></i> Watermarking
+                            </div>
+                            <p class="text-gray-600 text-sm">Proteksi Hak Cipta</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 text-center pb-4 border-b-2 border-gray-200">
+                            <h3 class="font-bold text-gray-700 text-lg">Kapasitas Data</h3>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-purple-700 font-semibold mb-2 text-sm">
+                                <i class="fas fa-user-secret"></i> Steganografi
+                            </div>
+                            <div>
+                                <i class="fas fa-star text-yellow-500"></i>
+                                <i class="fas fa-star text-yellow-500"></i>
+                                <i class="fas fa-star text-yellow-500"></i>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-blue-700 font-semibold mb-2 text-sm">
+                                <i class="fas fa-stamp"></i> Watermarking
+                            </div>
+                            <div>
+                                <i class="fas fa-star text-yellow-500"></i>
+                                <i class="fas fa-star text-gray-300"></i>
+                                <i class="fas fa-star text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 text-center pb-4 border-b-2 border-gray-200">
+                            <h3 class="font-bold text-gray-700 text-lg">Robustness</h3>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-purple-700 font-semibold mb-2 text-sm">
+                                <i class="fas fa-user-secret"></i> Steganografi
+                            </div>
+                            <div>
+                                <i class="fas fa-star text-yellow-500"></i>
+                                <i class="fas fa-star text-gray-300"></i>
+                                <i class="fas fa-star text-gray-300"></i>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-blue-700 font-semibold mb-2 text-sm">
+                                <i class="fas fa-stamp"></i> Watermarking
+                            </div>
+                            <div>
+                                <i class="fas fa-star text-yellow-500"></i>
+                                <i class="fas fa-star text-yellow-500"></i>
+                                <i class="fas fa-star text-yellow-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop: Table Layout -->
+            <div class="hidden md:block bg-white rounded-xl shadow-lg overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-4 text-left font-bold text-gray-700">Fitur</th>
+                            <th class="px-6 py-4 text-center font-bold text-purple-700">
+                                <i class="fas fa-user-secret mr-2"></i>Steganografi
+                            </th>
+                            <th class="px-6 py-4 text-center font-bold text-blue-700">
+                                <i class="fas fa-stamp mr-2"></i>Watermarking
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-semibold text-gray-700">Visibility</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Tidak Terlihat</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Visible/Invisible</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-semibold text-gray-700">Tujuan Utama</td>
+                            <td class="px-6 py-4 text-center text-gray-600">Komunikasi Rahasia</td>
+                            <td class="px-6 py-4 text-center text-gray-600">Proteksi Hak Cipta</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Team Credits -->
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-4 md:mb-6">
+                    <i class="fas fa-users mr-2"></i>Tim Pengembang
+                </h2>
+                <h3 class="text-sm md:text-base text-center text-gray-600 mb-6">
+                    <i class="fas fa-graduation-cap mr-2"></i>Kelompok 5 - Pengolahan Citra Digital
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg">
+                        <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2">1</div>
+                        <p class="font-bold text-gray-800">Ilham Sholahuddin</p>
+                        <p class="text-xs text-gray-600">231011403034</p>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg">
+                        <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2">2</div>
+                        <p class="font-bold text-gray-800">M. Andi Yanuar Ibrahim</p>
+                        <p class="text-xs text-gray-600">231011400028</p>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2">3</div>
+                        <p class="font-bold text-gray-800">Muhammad Fathan A.</p>
+                        <p class="text-xs text-gray-600">231011402389</p>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg">
+                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2">4</div>
+                        <p class="font-bold text-gray-800">Nur Annisa Chania</p>
+                        <p class="text-xs text-gray-600">231011400034</p>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg">
+                        <div class="w-12 h-12 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2">5</div>
+                        <p class="font-bold text-gray-800">Yulia Aprilia Sapira</p>
+                        <p class="text-xs text-gray-600">231011400014</p>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg">
+                        <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2">6</div>
+                        <p class="font-bold text-gray-800">Zamziatul Latifah</p>
+                        <p class="text-xs text-gray-600">231011403234</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-gray-600">
+            <p class="text-sm">© 2025 Pengolahan Citra Digital - Steganografi & Watermarking</p>
+        </div>
+    </div>
+</body>
+</html>
